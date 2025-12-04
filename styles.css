@@ -1,0 +1,371 @@
+/* styles.css — base, layout, acessibilidade e responsividade
+   Comentários explicativos adicionados em pontos relevantes para facilitar leitura.
+*/
+
+/* 1) Reset e base
+   - box-sizing: border-box para facilitar cálculo de larguras/paddings.
+   - Remove margens/paddings padrão do navegador.
+   - scroll-behavior: smooth para rolagem suave entre âncoras.
+   - Preferência por redução de movimento respeitada via media query.
+*/
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  /* Se o usuário prefere menos movimento, desativa animações/rolagem suave */
+  * { scroll-behavior: auto !important; transition: none !important; }
+}
+
+/* Tipografia e cores base do site */
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: clamp(0.95rem, 1rem + 0.2vw, 1.05rem); /* tamanho responsivo */
+  line-height: 1.6;
+  color: #222;
+  background: #f7f7f7;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Skip link
+   - Link invisível por padrão para pular direto ao conteúdo (acessibilidade).
+   - Torna-se visível quando recebe foco (usuários de teclado).
+*/
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+.skip-link:focus {
+  left: 12px;
+  top: 12px;
+  width: auto;
+  height: auto;
+  padding: 8px 12px;
+  background: #0b76ef;
+  color: #fff;
+  border-radius: 6px;
+  z-index: 2000;
+}
+
+/* 2) Foco visível e estados
+   - Estilos de foco visível para elementos interativos (boa prática de acessibilidade).
+   - .menu a.active é usado para destacar o link ativo (IntersectionObserver).
+*/
+.menu a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid #0b76ef;
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+.menu a.active {
+  background: rgba(11,118,239,0.12);
+  color: #0b76ef;
+}
+
+/* 3) Header / menu
+   - Cabeçalho fixo (sticky) com leve transparência e blur para efeito moderno.
+   - .menu usa flexbox para alinhar itens e permitir responsividade.
+*/
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(255,255,255,0.95);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  backdrop-filter: blur(6px);
+}
+.menu {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(8px, 2vw, 16px);
+  align-items: center;
+  padding: 12px clamp(12px, 3vw, 24px);
+}
+.menu a {
+  text-decoration: none;
+  color: inherit;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: background .18s, color .18s;
+}
+.menu a:hover,
+.menu a:focus {
+  background: rgba(0,0,0,0.06);
+  outline: none;
+}
+
+/* Botões de tema e hambúrguer
+   - Mantém alvo tátil mínimo (44px) para usabilidade em dispositivos móveis.
+   - .hamburger fica oculto em desktop e aparece em breakpoints menores.
+*/
+#themeToggle,
+.hamburger {
+  margin-left: auto;
+  background: transparent;
+  border: 1px solid rgba(0,0,0,0.08);
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  min-height: 44px; /* alvo tátil mínimo */
+}
+.hamburger { display: none; font-size: 20px; }
+
+/* 4) Conteúdo principal
+   - Centraliza o conteúdo e define larguras máximas para leitura confortável.
+   - section tem espaçamento responsivo via clamp.
+*/
+main {
+  max-width: 1200px;
+  margin: 28px auto;
+  padding: 0 20px;
+}
+.section-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+}
+.section-inner--wide { max-width: none; padding: 0 24px; }
+section {
+  padding: clamp(32px, 6vw, 64px) 0;
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+}
+section h1,
+section h2 {
+  font-size: clamp(1.3rem, 1.1rem + 1vw, 2rem);
+  margin-bottom: 12px;
+  line-height: 1.25;
+}
+
+/* ABOUT: grid para foto + texto
+   - Em desktop: duas colunas (imagem fixa + conteúdo flexível).
+   - gap e padding para espaçamento consistente.
+*/
+.about-grid {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 28px;
+  align-items: start;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* FOTO: estilo da imagem e legenda
+   - object-fit: cover garante recorte adequado da imagem.
+   - box-shadow e border para destaque visual.
+*/
+.about-photo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  padding-top: 6px;
+}
+.about-photo img {
+  width: 220px;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 12px;
+  display: block;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.28);
+  border: 3px solid rgba(0,0,0,0.06);
+}
+.figcaption-visible {
+  display: block;
+  margin-top: 6px;
+  font-size: .9rem;
+  color: #666;
+  text-align: center;
+}
+
+/* separador sutil entre foto e texto */
+.about-text {
+  padding-left: 28px;
+  border-left: 1px solid rgba(0,0,0,0.06);
+}
+.about-text .info-list {
+  margin: 0;
+  padding-left: 18px;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+
+/* 5) Formulário (Contato)
+   - Layout em grid para espaçamento consistente entre campos.
+   - Inputs e textarea com padding e borda suave.
+   - Botão com estilo primário e estado hover.
+*/
+form#contactForm {
+  display: grid;
+  gap: 12px;
+  max-width: 600px;
+}
+label { font-size: .95rem; color: #555; }
+input[type="text"],
+input[type="email"],
+textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid rgba(0,0,0,0.12);
+  border-radius: 6px;
+  font-size: 1rem;
+  background: #fff;
+  color: #222;
+}
+textarea { min-height: 140px; resize: vertical; }
+button[type="submit"] {
+  background: #0b76ef;
+  color: #fff;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  min-height: 44px;
+  transition: background .18s ease-in-out;
+}
+button[type="submit"]:hover { background: #095fc1; }
+
+/* botão loading
+   - Classe adicionada via JS durante a simulação de envio para evitar múltiplos cliques.
+*/
+button.loading { opacity: 0.8; pointer-events: none; }
+
+/* Mensagens de feedback do formulário
+   - .feedback é atualizado dinamicamente pelo script.js
+   - .error e .success têm estilos distintos para clareza visual.
+*/
+.feedback { margin-top: 8px; padding: 8px 10px; border-radius: 6px; display: none; }
+.feedback.error { display: block; background: #ffecec; border: 1px solid #f0b7b7; color: #7a1f1f; }
+.feedback.success { display: block; background: #e6ffed; border: 1px solid #b7f0c6; color: #1b5e34; }
+
+/* 6) Cards / Portfólio
+   - Grid de 3 colunas em desktop; cada .card tem padding e sombra leve.
+   - Imagens dentro do card são responsivas (width:100%).
+*/
+.portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 14px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+}
+.card img { width: 100%; height: auto; display: block; border-radius: 6px; margin-bottom: 10px; }
+.card h3 { font-size: 1.1rem; margin-bottom: 6px; }
+.card p { color: #555; }
+
+/* 7) Responsividade
+   - Breakpoints para 900px e 700px ajustam layout do portfólio e about-grid.
+   - Em telas pequenas, o menu vira coluna (controlado pela classe .menu.open).
+*/
+@media (max-width: 900px) {
+  .portfolio-grid { grid-template-columns: repeat(2, 1fr); }
+  .about-grid { grid-template-columns: 180px 1fr; gap: 20px; }
+  .about-photo img { width: 180px; height: 180px; }
+}
+@media (max-width: 700px) {
+  .hamburger { display: inline-block; margin-left: auto; }
+  .menu.open { flex-direction: column; align-items: stretch; padding-bottom: 12px; }
+  .menu.open a { display: block; width: 100%; }
+  .portfolio-grid { grid-template-columns: 1fr; }
+  .about-grid { grid-template-columns: 1fr; gap: 16px; padding: 0 16px; }
+  .about-photo { justify-content: center; align-items: center; padding-top: 0; }
+  .about-photo img { width: 140px; height: 140px; margin: 0 auto; box-shadow: 0 6px 18px rgba(0,0,0,0.28); }
+  .about-text { border-left: none; padding-left: 0; }
+}
+
+/* 8) Tema escuro (classe .dark no body)
+   - Quando body.dark está presente, cores são invertidas para tema escuro.
+   - O JS alterna essa classe e persiste a escolha no localStorage.
+*/
+body.dark {
+  background: #0f1720;
+  color: #e6eef8;
+}
+body.dark .site-header {
+  background: rgba(15,23,32,0.92);
+  border-bottom-color: rgba(230,238,248,0.12);
+}
+body.dark .menu a:hover { background: rgba(230,238,248,0.10); }
+body.dark .card {
+  background: #0b1220;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+}
+body.dark input,
+body.dark textarea {
+  background: #0a1628;
+  color: #e6eef8;
+  border-color: rgba(230,238,248,0.24);
+}
+body.dark button[type="submit"] { background: #4c8dff; }
+body.dark button[type="submit"]:hover { background: #3c76d6; }
+body.dark .about-text { border-left-color: rgba(230,238,248,0.06); }
+body.dark .about-photo img { border-color: rgba(230,238,248,0.04); }
+
+/* Modal de confirmação (simples e acessível)
+   - Modal é posicionado fixed e oculto por padrão.
+   - Quando aria-hidden="false" (controlado por JS), display: flex mostra o modal.
+   - Backdrop cobre toda a tela e fecha o modal ao ser clicado.
+*/
+.modal {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 2200;
+}
+.modal[aria-hidden="false"] { display: flex; }
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(2px);
+}
+.modal-panel {
+  position: relative;
+  background: #fff;
+  color: #111;
+  width: min(560px, calc(100% - 48px));
+  border-radius: 10px;
+  box-shadow: 0 18px 48px rgba(0,0,0,0.45);
+  padding: 18px;
+  z-index: 10;
+}
+body.dark .modal-panel { background: #0b1220; color: #e6eef8; }
+.modal-header h3 { margin: 0 0 8px; font-size: 1.1rem; }
+.modal-body p { margin: 0 0 12px; color: inherit; }
+.modal-footer { display: flex; justify-content: flex-end; gap: 8px; }
+
+/* Botões do modal e estilo padrão de botões secundários */
+.btn {
+  background: #0b76ef;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.btn:hover { background: #095fc1; }
+body.dark .btn { background: #4c8dff; }
+
+/* Footer
+   - Estilo simples e discreto; cor do texto mais clara para não competir com conteúdo.
+*/
+.site-footer { padding: 20px 0; border-top: 1px solid rgba(0,0,0,0.04); background: transparent; }
+.site-footer p { color: #666; font-size: .95rem; }
+.site-footer a { color: inherit; text-decoration: underline; }

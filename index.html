@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="pt-BR" class="no-js">
+<head>
+  <!-- Metadados básicos -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Portfólio — Otton Hiro Ywata Orilhana</title>
+  <meta name="description" content="Portfólio de Otton Hiro Ywata Orilhana — Sobre, Formação, Portfólio e Contato.">
+
+  <!-- Favicon e arquivos estáticos -->
+  <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="styles.css">
+  <!-- script.js é carregado com defer para não bloquear o parsing do HTML -->
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <!-- Link de pular para conteúdo (acessibilidade) -->
+  <a href="#conteudo" class="skip-link">Ir para o conteúdo</a>
+
+  <!-- Cabeçalho com menu de navegação -->
+  <header class="site-header">
+    <!-- nav com role e aria-label para leitores de tela -->
+    <nav class="menu" id="mainMenu" aria-label="Menu principal" role="navigation">
+      <!-- Links de âncora para navegação por seções (single-page) -->
+      <a href="#sobre">Sobre</a>
+      <a href="#formacao">Formação</a>
+      <a href="#portfolio">Portfólio</a>
+      <a href="#contato">Contato</a>
+
+      <!-- Botão para alternar tema (claro/escuro). aria-pressed indica estado -->
+      <button id="themeToggle" aria-pressed="false" aria-label="Alternar tema">Tema</button>
+
+      <!-- Botão hambúrguer para abrir/fechar menu em telas pequenas -->
+      <button id="menuToggle" class="hamburger" aria-expanded="false" aria-controls="mainMenu" aria-label="Abrir menu">☰</button>
+    </nav>
+  </header>
+
+  <!-- Conteúdo principal da página -->
+  <main id="conteudo" role="main">
+    <!-- SEÇÃO SOBRE -->
+    <!-- aria-labelledby liga a seção ao título para leitores de tela -->
+    <section id="sobre" aria-labelledby="titulo-sobre">
+      <div class="section-inner section-inner--wide">
+        <!-- Título principal da seção -->
+        <h1 id="titulo-sobre">Sobre mim</h1>
+
+        <!-- Parágrafo de apresentação; use <strong> para destacar o nome -->
+        <p class="lead">
+          Meu nome é <strong>Otton Hiro Ywata Orilhana</strong>, tenho 26 anos e moro em Ibiúna (SP).
+          Atualmente atuo como assistente no laboratório de embalagens da Nissin Foods do Brasil, onde realizo rotinas de controle de qualidade e registro de dados.
+          Motivado pela experiência com sistemas de garantia de qualidade, estou me especializando em Banco de Dados para migrar para a área de dados, aplicando atenção a detalhes, organização e capacidade analítica.
+        </p>
+      </div>
+
+      <!-- Grid com foto e informações pessoais -->
+      <!-- role="group" e aria-label ajudam na navegação por leitores de tela -->
+      <div class="about-grid" role="group" aria-label="Foto e informações sobre Otton">
+        <figure class="about-photo" aria-hidden="false">
+          <!-- Imagem com atributos width/height e loading="lazy" para performance -->
+          <img src="assets/imagens/otton-foto.jpg"
+               alt="Otton Hiro Ywata Orilhana, retrato profissional"
+               width="220" height="220" loading="lazy">
+          <!-- Legenda visível abaixo da foto -->
+          <figcaption class="figcaption-visible">Otton — Ibiúna, SP</figcaption>
+        </figure>
+
+        <!-- Texto com informações pessoais; aria-labelledby reaproveita o título -->
+        <div class="about-text" aria-labelledby="titulo-sobre">
+          <ul class="info-list">
+            <li><strong>Nome:</strong> Otton Hiro Ywata Orilhana</li>
+            <li><strong>Idade:</strong> 26 anos</li>
+            <li><strong>Local:</strong> Ibiúna, SP</li>
+            <li><strong>Hobbies:</strong> Leitura (biografias, terror, finanças); caminhadas; música (rock); aprendizado contínuo; videogames</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEÇÃO FORMAÇÃO -->
+    <section id="formacao" aria-labelledby="titulo-formacao">
+      <div class="section-inner">
+        <h2 id="titulo-formacao">Formação</h2>
+        <!-- Lista com formação acadêmica e idiomas -->
+        <ul class="formacao-list">
+          <li><strong>Graduação:</strong> Biomedicina — UNIP Sorocaba — 2018–2022</li>
+          <li><strong>Especialização:</strong> Vigilância Laboratorial em Saúde Pública — Instituto Adolfo Lutz, Sorocaba — 2022–2023</li>
+          <li><strong>Formação atual:</strong> Tecnologia em Ciência de Dados — UNINTER (em andamento)</li>
+          <li><strong>Idiomas:</strong> Português (nativo); Inglês (básico)</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- SEÇÃO PORTFÓLIO -->
+    <section id="portfolio" aria-labelledby="titulo-portfolio">
+      <div class="section-inner">
+        <h2 id="titulo-portfolio">Portfólio</h2>
+
+        <!-- Grid de cartões de projetos -->
+        <div class="portfolio-grid">
+          <!-- Cada article representa um projeto; aria-labelledby liga ao título do projeto -->
+          <!-- Projeto: Número Secreto -->
+          <article class="card" aria-labelledby="proj-numero-title">
+            <!-- Miniatura do projeto; alt descreve a imagem -->
+            <img src="assets/imagens/numero-secreto.png"
+                 alt="Miniatura do projeto Número Secreto"
+                 loading="lazy" width="400" height="240">
+            <h3 id="proj-numero-title">Número Secreto</h3>
+            <!-- Descrição curta do projeto e tecnologias usadas -->
+            <p class="proj-desc">Jogo que gera um número aleatório e permite tentativas do usuário; lógica e validações em JavaScript. Stack: HTML, CSS, JavaScript.</p>
+            <p class="proj-links">
+              <!-- Link para o repositório do projeto no GitHub; target="_blank" abre em nova aba -->
+              <a href="https://github.com/Otton-Orilhana/numero-secreto" target="_blank" rel="noopener noreferrer" aria-label="Código do Número Secreto no GitHub">Código</a>
+            </p>
+          </article>
+
+          <!-- Projeto: Cofrinho -->
+          <article class="card" aria-labelledby="proj-cofrinho-title">
+            <img src="assets/imagens/cofrinho.png"
+                 alt="Miniatura do projeto Cofrinho"
+                 loading="lazy" width="400" height="240">
+            <h3 id="proj-cofrinho-title">Cofrinho — POO</h3>
+            <p class="proj-desc">Exercício de POO em Java: operações de depósito, saque e relatório do cofrinho. Stack: Java (POO), Maven/Gradle.</p>
+            <p class="proj-links">
+              <a href="https://github.com/Otton-Orilhana/Trabalho-Cofrinho-POO" target="_blank" rel="noopener noreferrer" aria-label="Código do Cofrinho no GitHub">Código</a>
+            </p>
+          </article>
+
+          <!-- Projeto: Menu -->
+          <article class="card" aria-labelledby="proj-menu-title">
+            <img src="assets/imagens/menu.png"
+                 alt="Miniatura do projeto Menu"
+                 loading="lazy" width="400" height="240">
+            <h3 id="proj-menu-title">Menu</h3>
+            <p class="proj-desc">Componente/menu interativo implementado como exercício; foco em acessibilidade e navegação. Stack: HTML, CSS, JavaScript.</p>
+            <p class="proj-links">
+              <a href="https://github.com/Otton-Orilhana/Menu" target="_blank" rel="noopener noreferrer" aria-label="Código do Menu no GitHub">Código</a>
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEÇÃO CONTATO -->
+    <section id="contato" aria-labelledby="titulo-contato">
+      <div class="section-inner">
+        <h2 id="titulo-contato">Contato</h2>
+
+        <!-- Formulário com id usado pelo script.js para validação e simulação -->
+        <!-- novalidate evita validação nativa do navegador para usar validação customizada em JS -->
+        <form id="contactForm" novalidate>
+          <div class="form-row">
+            <!-- label associado ao input via for/id para acessibilidade -->
+            <label for="nome">Nome</label>
+            <input id="nome" name="nome" type="text" placeholder="Seu nome" required autocomplete="name" maxlength="80" aria-required="true">
+          </div>
+
+          <div class="form-row">
+            <label for="email">E-mail</label>
+            <!-- type="email" ajuda navegadores a oferecer teclado adequado em mobile -->
+            <input id="email" name="email" type="email" placeholder="seu@exemplo.com" required autocomplete="email" maxlength="120" aria-required="true">
+          </div>
+
+          <div class="form-row">
+            <label for="mensagem">Mensagem</label>
+            <!-- minlength e maxlength são atributos informativos; validação principal é feita em JS -->
+            <textarea id="mensagem" name="mensagem" rows="6" placeholder="Escreva sua mensagem" required minlength="10" maxlength="2000" aria-required="true"></textarea>
+          </div>
+
+          <div class="form-actions">
+            <!-- Botão de envio; script.js manipula o evento submit -->
+            <button id="submitBtn" type="submit">Enviar</button>
+          </div>
+
+          <!-- Elemento para mostrar feedback de erro/sucesso; aria-live para leitores de tela -->
+          <p id="formFeedback" class="feedback" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal de confirmação (acessível) -->
+  <!-- aria-hidden controla visibilidade para leitores de tela; script.js alterna esse atributo -->
+  <div id="confirmModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle" aria-hidden="true">
+    <!-- Backdrop que fecha o modal ao clicar (data-close usado pelo script) -->
+    <div class="modal-backdrop" data-close="true"></div>
+    <div class="modal-panel" role="document">
+      <header class="modal-header">
+        <!-- Título do modal referenciado por aria-labelledby -->
+        <h3 id="confirmTitle">Mensagem enviada</h3>
+      </header>
+      <div class="modal-body">
+        <p>Mensagem enviada com sucesso! Obrigado pelo contato.</p>
+      </div>
+      <footer class="modal-footer">
+        <!-- Botão para fechar o modal; script.js adiciona listener a este botão -->
+        <button id="modalCloseBtn" class="btn" type="button">Fechar</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Rodapé com link para o GitHub -->
+  <footer class="site-footer">
+    <div class="section-inner">
+      <!-- <span id="ano"> é preenchido dinamicamente pelo script.js -->
+      <p>© <span id="ano"></span> Otton Hiro Ywata Orilhana — <a href="https://github.com/Otton-Orilhana" target="_blank" rel="noopener noreferrer">GitHub</a></p>
+    </div>
+  </footer>
+</body>
+</html>
