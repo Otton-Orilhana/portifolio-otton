@@ -2,7 +2,7 @@
 
 Portfólio pessoal com as seções: Sobre, Formação, Portfólio e Contato.
 
-**URL do site (GitHub Pages):** https://Otton-Orilhana.github.io/portifolio-otton/  <!-- atualize após ativar Pages -->
+**URL do site (GitHub Pages):** https://otton-orilhana.github.io/portifolio-otton/
 
 ## Descrição
 Site estático em HTML5, CSS e JavaScript sem frameworks. Contém:
@@ -11,8 +11,8 @@ Site estático em HTML5, CSS e JavaScript sem frameworks. Contém:
 - Quatro seções obrigatórias: Sobre, Formação, Portfólio, Contato.
 
 ## Tecnologias
-- HTML5
-- CSS3
+- HTML5  
+- CSS3  
 - JavaScript (Vanilla)
 
 ## Como executar localmente
