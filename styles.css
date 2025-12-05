@@ -105,16 +105,39 @@ textarea:focus-visible {
    - Mantém alvo tátil mínimo (44px) para usabilidade em dispositivos móveis.
    - .hamburger fica oculto em desktop e aparece em breakpoints menores.
 */
+/* Variáveis de botão (usar dentro do tema claro/escuro via :root / body.dark) */
+:root {
+  --btn-bg: transparent;
+  --btn-color: #222222;
+}
+body.dark {
+  --btn-bg: #ffffff;   /* força botão claro no modo escuro para contraste */
+  --btn-color: #111111;
+}
+
+/* Botões de tema e hambúrguer (ajustado para usar variáveis) */
 #themeToggle,
 .hamburger {
   margin-left: auto;
-  background: transparent;
+  background: var(--btn-bg);
+  color: var(--btn-color);
   border: 1px solid rgba(0,0,0,0.08);
   padding: 8px 12px;
   border-radius: 6px;
   cursor: pointer;
-  min-height: 44px; /* alvo tátil mínimo */
+  min-height: 44px;
 }
+
+/* Estilos específicos do toggle */
+#themeToggle {
+  font-size: 0.95rem;
+  transition: background .15s, color .15s, box-shadow .15s;
+}
+#themeToggle:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(110,160,255,0.18);
+}
+
 .hamburger { display: none; font-size: 20px; }
 
 /* 4) Conteúdo principal

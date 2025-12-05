@@ -1,119 +1,140 @@
 /* script.js
-   Validação do formulário, simulação de envio com modal, menu responsivo e tema persistente
-   Comentários explicativos adicionados para facilitar leitura e correção.
+   Validação do formulário, simulação de envio com modal,
+   menu responsivo e alternância de tema com persistência.
+   Comentários explicativos adicionados para facilitar manutenção.
 */
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Remove a classe no-js adicionada no HTML para indicar que JavaScript está disponível
+  // Remove a classe que indica ausência de JS (melhora estilos quando JS está ativo)
   document.documentElement.classList.remove('no-js');
 
-  // Seletores utilitários: $ para querySelector e $$ para querySelectorAll (retorna array)
+  // Pequenas utilidades para selecionar elementos
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
   // Elementos principais do layout
-  const menu = $('.menu');                 // elemento do menu de navegação
-  const menuToggle = $('#menuToggle');     // botão hambúrguer para abrir/fechar menu em mobile
-  const themeToggle = $('#themeToggle');   // botão para alternar tema claro/escuro
-  const body = document.body;              // referência ao elemento <body>
+  const menu = $('.menu');
+  const menuToggle = $('#menuToggle');
+  const themeToggle = $('#themeToggle');
+  const body = document.body;
 
   // Elementos do formulário de contato
-  const form = $('#contactForm');          // formulário
-  const nomeEl = $('#nome');               // input nome
-  const emailEl = $('#email');             // input e-mail
-  const msgEl = $('#mensagem');            // textarea mensagem
-  const feedback = $('#formFeedback');     // elemento para mostrar mensagens de erro/sucesso
-  const submitBtn = $('#submitBtn');       // botão de envio
+  const form = $('#contactForm');
+  const nomeEl = $('#nome');
+  const emailEl = $('#email');
+  const msgEl = $('#mensagem');
+  const feedback = $('#formFeedback');
+  const submitBtn = $('#submitBtn');
 
   // Elementos do modal de confirmação
-  const modal = $('#confirmModal');                        // container do modal
-  const modalCloseBtn = $('#modalCloseBtn');               // botão fechar do modal
-  const modalBackdrop = modal ? modal.querySelector('.modal-backdrop') : null; // backdrop clicável
+  const modal = $('#confirmModal');
+  const modalCloseBtn = $('#modalCloseBtn');
+  const modalBackdrop = modal ? modal.querySelector('.modal-backdrop') : null;
 
-  // Seletor para elementos focáveis dentro do modal (usado para trap focus)
+  // Seletor para elementos focáveis (usado no trap focus do modal)
   const focusableSelector = 'button, [href], input, textarea, select, [tabindex]:not([tabindex="-1"])';
 
   /* =========================
-     MENU ACESSÍVEL (abre/fecha)
-     - Controla a abertura do menu em telas pequenas
-     - Atualiza aria-expanded para acessibilidade
-     ========================= */
+     MENU (acessível e responsivo)
+     - Abre/fecha o menu em telas pequenas
+     - Atualiza aria-expanded para leitores de tela
+  ========================= */
   if (menu && menuToggle) {
-    // Função que aplica o estado aberto/fechado no menu
     const setMenuState = (open) => {
-      menu.classList.toggle('open', open);                     // adiciona/ remove classe CSS
-      menuToggle.setAttribute('aria-expanded', String(open));  // atualiza atributo ARIA
+      // Adiciona/Remove classe CSS que controla a exibição do menu
+      menu.classList.toggle('open', open);
+      // Atualiza atributo ARIA para indicar estado do botão
+      menuToggle.setAttribute('aria-expanded', String(open));
     };
 
-    // Clique no botão alterna o estado do menu
+    // Alterna estado ao clicar
     menuToggle.addEventListener('click', () => setMenuState(!menu.classList.contains('open')));
 
     // Permite ativar o botão com Enter ou Espaço (acessibilidade teclado)
     menuToggle.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); menuToggle.click(); }
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        menuToggle.click();
+      }
     });
 
-    // Fecha o menu ao clicar em qualquer link de âncora do menu
+    // Fecha o menu ao clicar em um link de âncora
     $$('.menu a[href^="#"]').forEach(link => link.addEventListener('click', () => setMenuState(false)));
 
     // Fecha o menu ao pressionar ESC
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setMenuState(false); });
 
-    // Fecha o menu ao clicar fora dele (click fora do menu e do botão)
+    // Fecha o menu ao clicar fora dele (exceto quando o clique é no botão do menu)
     document.addEventListener('click', (e) => {
       if (!menu.contains(e.target) && !menuToggle.contains(e.target)) setMenuState(false);
     });
   }
 
   /* =========================
-     TEMA CLARO/ESC URO (persistente)
-     - Detecta preferência do sistema e salva escolha no localStorage
+     TEMA (claro / escuro)
+     - Detecta preferência do sistema
+     - Carrega tema salvo no localStorage
      - Aplica classe .dark no body para ativar estilos escuros
-     ========================= */
+     - Atualiza texto do botão e atributos ARIA
+  ========================= */
   if (themeToggle) {
-    // Detecta preferência do sistema (dark mode)
+    // Detecta preferência do sistema (true se o usuário prefere dark)
     const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-    // Carrega tema salvo no localStorage ou usa preferência do sistema
+    // Carrega tema salvo (chave 'site-theme') ou usa preferência do sistema
     const loadTheme = () => {
       try {
-        const saved = localStorage.getItem('site-theme');
-        return saved || (prefersDark ? 'dark' : 'light');
-      } catch { return prefersDark ? 'dark' : 'light'; }
+        const saved = localStorage.getItem('site-theme'); // 'dark' | 'light' | null
+        return saved ? saved : (prefersDark ? 'dark' : 'light');
+      } catch (e) {
+        // Se localStorage não estiver disponível, usa preferência do sistema
+        return prefersDark ? 'dark' : 'light';
+      }
     };
 
-    // Aplica o tema: adiciona/remova classe e atualiza texto/atributos do botão
+    // Aplica o tema: adiciona/remova classe e atualiza o botão
     const applyTheme = (theme) => {
-      body.classList.toggle('dark', theme === 'dark');
-      themeToggle.textContent = theme === 'dark' ? 'Claro' : 'Escuro';
-      themeToggle.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
-      themeToggle.setAttribute('title', theme === 'dark' ? 'Ativar tema claro' : 'Ativar tema escuro');
+      if (body) body.classList.toggle('dark', theme === 'dark');
+
+      // Atualiza o texto do botão para indicar a ação que o clique fará
+      // Ex.: quando está em 'dark', o botão mostra 'Claro' (clicando ativa o claro)
+      if (themeToggle && themeToggle instanceof Element) {
+        themeToggle.textContent = theme === 'dark' ? 'Claro' : 'Escuro';
+        themeToggle.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
+        themeToggle.setAttribute('title', theme === 'dark' ? 'Ativar tema claro' : 'Ativar tema escuro');
+      }
     };
 
     // Inicializa tema atual e aplica
     let currentTheme = loadTheme();
     applyTheme(currentTheme);
 
-    // Alterna tema ao clicar e tenta salvar a preferência
+    // Alterna tema ao clicar e persiste a escolha
     themeToggle.addEventListener('click', () => {
       currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
       applyTheme(currentTheme);
-      try { localStorage.setItem('site-theme', currentTheme); } catch {}
+      try { localStorage.setItem('site-theme', currentTheme); } catch (e) { /* ignorar se indisponível */ }
+    });
+
+    // Suporte de teclado para o toggle (Enter / Espaço)
+    themeToggle.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        themeToggle.click();
+      }
     });
   }
 
   /* =========================
      UTIL: valida e-mail simples
-     - Regex simples para checar formato básico de e-mail
-     - Não substitui validação no servidor, mas é suficiente para front-end
-     ========================= */
+     - Regex básica para checar formato (não substitui validação no servidor)
+  ========================= */
   const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   /* =========================
-     Mostrar feedback inline
-     - Atualiza o elemento de feedback com texto e classes de estilo
-     - Usa role apropriado para leitores de tela (status/alert)
-     ========================= */
+     Feedback visual do formulário
+     - Atualiza texto, classe e role para leitores de tela
+  ========================= */
   const showFeedback = (text, type = 'error') => {
     if (!feedback) return;
     feedback.textContent = text;
@@ -122,31 +143,30 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   /* =========================
-     Modal helpers (abrir/fechar e trap focus)
-     - openModal: abre o modal, guarda elemento previamente focado e foca primeiro elemento dentro do modal
-     - closeModal: fecha o modal e restaura foco ao elemento anterior
-     - trapFocus: impede que o foco saia do modal enquanto ele estiver aberto
-     - handleModalKeydown: trata ESC e navegação com Tab dentro do modal
-     ========================= */
+     Modal helpers (abrir / fechar / trap focus)
+     - openModal: mostra o modal e foca o primeiro elemento focável
+     - closeModal: esconde o modal e restaura foco ao elemento anterior
+     - trapFocus: impede que o foco saia do modal enquanto aberto
+  ========================= */
   const openModal = () => {
     if (!modal) return;
-    modal.setAttribute('aria-hidden', 'false');           // torna o modal visível para ATs
-    modal._previousActive = document.activeElement;       // guarda o elemento que tinha foco antes
+    modal.setAttribute('aria-hidden', 'false'); // torna visível para ATs
+    modal._previousActive = document.activeElement; // guarda elemento previamente focado
     const focusable = modal.querySelectorAll(focusableSelector);
-    if (focusable.length) focusable[0].focus();           // foca o primeiro elemento focável do modal
-    document.addEventListener('focus', trapFocus, true);  // adiciona listener para manter foco dentro do modal
+    if (focusable.length) focusable[0].focus();
+    document.addEventListener('focus', trapFocus, true);
     document.addEventListener('keydown', handleModalKeydown);
   };
 
   const closeModal = () => {
     if (!modal) return;
-    modal.setAttribute('aria-hidden', 'true');            // esconde o modal para ATs
+    modal.setAttribute('aria-hidden', 'true'); // esconde para ATs
     document.removeEventListener('focus', trapFocus, true);
     document.removeEventListener('keydown', handleModalKeydown);
-    if (modal._previousActive) modal._previousActive.focus(); // restaura foco ao elemento anterior
+    if (modal._previousActive) modal._previousActive.focus(); // restaura foco
   };
 
-  // Evita que o foco saia do modal enquanto ele estiver aberto
+  // Mantém foco dentro do modal enquanto ele estiver aberto
   const trapFocus = (e) => {
     if (!modal || modal.getAttribute('aria-hidden') === 'true') return;
     if (!modal.contains(e.target)) {
@@ -156,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // Trata teclas dentro do modal: ESC para fechar e Tab para circular foco
+  // Trata ESC e navegação com Tab dentro do modal
   const handleModalKeydown = (e) => {
     if (e.key === 'Escape') closeModal();
     if (e.key === 'Tab') {
@@ -176,17 +196,16 @@ document.addEventListener('DOMContentLoaded', () => {
   /* =========================
      FORM: validação e simulação de envio
      - Valida nome, e-mail e mensagem
-     - Usa setCustomValidity/reportValidity para mostrar mensagens nativas quando possível
-     - Simula envio com setTimeout, limpa o formulário e abre modal de confirmação
-     ========================= */
+     - Simula envio com setTimeout, limpa o formulário e abre modal
+  ========================= */
   if (form && nomeEl && emailEl && msgEl && submitBtn) {
     let submitting = false; // flag para evitar envios duplicados
 
     form.addEventListener('submit', (e) => {
-      e.preventDefault();           // evita envio real (não há backend)
-      if (submitting) return;       // evita múltiplos envios simultâneos
+      e.preventDefault();
+      if (submitting) return;
 
-      // Limpa feedback visual anterior
+      // Limpa feedback anterior
       feedback.textContent = '';
       feedback.className = 'feedback';
 
@@ -201,7 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Validação: nome obrigatório
       if (!nome) {
         nomeEl.setCustomValidity('Informe seu nome.');
-        nomeEl.reportValidity();   // mostra mensagem nativa do navegador
+        nomeEl.reportValidity();
         nomeEl.focus();
         showFeedback('Por favor, informe seu nome.', 'error');
         return;
@@ -212,7 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
         emailEl.setCustomValidity('E-mail inválido.');
         emailEl.reportValidity();
         emailEl.focus();
-        showFeedback('Por favor, informe um e‑mail válido (ex: usuario@dominio.com).', 'error');
+        showFeedback('Por favor, informe um email válido (ex: usuario@dominio.com).', 'error');
         return;
       }
 
@@ -225,34 +244,32 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // Simulação de envio: desabilita botão, mostra estado de loading e abre modal após delay
+      // Simulação de envio: desabilita botão, mostra loading e abre modal após delay
       submitting = true;
       submitBtn.disabled = true;
-      submitBtn.classList.add('loading');           // classe CSS para estilo de loading
+      submitBtn.classList.add('loading'); // classe para estilo de loading
       const originalText = submitBtn.textContent;
       submitBtn.textContent = 'Enviando...';
       showFeedback('Enviando mensagem...', 'success');
 
-      // Simula latência de rede com setTimeout
       setTimeout(() => {
-        form.reset();                                // limpa campos do formulário
+        form.reset(); // limpa campos
         submitBtn.disabled = false;
         submitBtn.classList.remove('loading');
         submitBtn.textContent = originalText;
-        openModal();                                 // abre modal de confirmação
+        openModal(); // abre modal de confirmação
         showFeedback('Mensagem enviada com sucesso!', 'success');
         submitting = false;
-      }, 800); // 800ms de simulação
+      }, 800); // simula latência de rede
     });
   }
 
   /* =========================
      IntersectionObserver para link ativo no menu
-     - Observa seções e marca o link correspondente como ativo quando a seção entra na viewport
-     - rootMargin e threshold ajustam quando a seção é considerada visível
-     ========================= */
+     - Observa seções e marca o link correspondente como ativo
+  ========================= */
   try {
-    const sections = $$('main section[id]'); // todas as seções com id dentro do main
+    const sections = $$('main section[id]');
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         const id = entry.target.id;
@@ -261,13 +278,14 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }, { root: null, rootMargin: '0px 0px -40% 0px', threshold: 0.15 });
 
-    // Inicia observação em cada seção
     sections.forEach(s => observer.observe(s));
   } catch (err) {
-    // Se o IntersectionObserver não estiver disponível, falha silenciosa (compatibilidade)
+    // Se IntersectionObserver não estiver disponível, falha silenciosa (compatibilidade)
   }
 
-  // Inserir ano atual no footer (dinamicamente)
+  /* =========================
+     Inserir ano atual no footer
+  ========================= */
   const anoEl = $('#ano');
   if (anoEl) anoEl.textContent = new Date().getFullYear();
 });
